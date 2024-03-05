@@ -1,5 +1,8 @@
-SRC = 	fractol.c hooks.c mandelbrot.c
-SRC_BONUS = 
+SRC = 	mandatory/fractol.c mandatory/hooks.c mandatory/mandelbrot.c \
+		mandatory/julia.c mandatory/operations.c mandatory/render.c
+SRC_BONUS = bonus/fractol_bonus.c bonus/hooks_bonus.c bonus/mandelbrot_bonus.c \
+			bonus/julia_bonus.c bonus/operations_bonus.c bonus/render_bonus.c \
+			bonus/bs_utils_bonus.c bonus/ship_bonus.c
 OBJS = ${SRC:.c=.o}
 OBJS_BONUS = ${SRC_BONUS:_bonus.c=_bonus.o}
 CFLAGS = -Wall -Wextra -Werror -Imlx
@@ -7,42 +10,38 @@ MLXFLAGS = -lmlx -framework OpenGL -framework AppKit -O3
 CC = cc
 RM = rm -f
 NAME = fractol
-NAME_BONUS = checker
+NAME_BONUS = fractol_bonus
 LIBFT_DIR = libs/libft
 PRINTF_DIR = libs/printf
-GNL_DIR = libs/get_next_line
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
-GNL = $(GNL_DIR)/get_next_line.c
-GNL_UTLS = $(GNL_DIR)/get_next_line_utils.c
 PRINTF_LIB = $(PRINTF_DIR)/libftprintf.a
 
-%.o: %.c
+
+bonus/%_bonus.o: bonus/%_bonus.c bonus/fractol_bonus.h
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
-%_bonus.o: %_bonus.c checker_bonus.h
+all: pre ${NAME}
+
+mandatory/%.o: mandatory/%.c mandatory/fractol.h
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
-${NAME}: ${OBJS} $(LIBFT_LIB) $(PRINTF_LIB)
+${NAME}: ${OBJS} ${LIBFT_LIB} ${PRINTF_LIB}
 		@echo "Linking with Libft and Ftprintf..."
-		@$(CC) $(MLXFLAGS) -o $@ $^
+		@$(CC) $(CFLAGS) $(MLXFLAGS) -o $@ $^
 		@echo "Finished"
 
-${NAME_BONUS}: ${OBJS_BONUS} ${GNL} ${GNL_UTLS} $(LIBFT_LIB) $(PRINTF_LIB)
+${NAME_BONUS}: ${OBJS_BONUS} $(LIBFT_LIB) $(PRINTF_LIB)
 		@echo "Compiling Bonus..."
-		@$(CC) $(CFLAGS) -o $@ $^
+		@$(CC) $(CFLAGS) $(MLXFLAGS) -o $@ $^
 		@echo "Finished"
 
-$(LIBFT_LIB):
+pre:
+	@echo "Compiling..."
 	@echo "Building Libft..."
-	@$(MAKE) -C $(LIBFT_DIR)
-	@echo "Done"
-
-$(PRINTF_LIB):
+	@cd $(LIBFT_DIR) && make
 	@echo "Building Ftprintf..."
-	@$(MAKE) -C $(PRINTF_DIR)
+	@cd $(PRINTF_DIR) && make
 	@echo "Done"
-
-all: ${NAME}
 
 clean:
 	@echo "Cleaning..."
@@ -58,6 +57,6 @@ fclean: clean
 
 re: fclean all
 
-bonus: ${NAME_BONUS}
+bonus: pre ${NAME_BONUS}
 
 .PHONY: clean

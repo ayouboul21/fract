@@ -6,7 +6,7 @@
 /*   By: aoulahra <aoulahra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 12:51:20 by aoulahra          #+#    #+#             */
-/*   Updated: 2024/01/31 12:14:55 by aoulahra         ###   ########.fr       */
+/*   Updated: 2024/03/05 15:31:09 by aoulahra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	find_sign(size_t *i, int *sign, const char *str)
 	}
 }
 
-long	ft_atoi(char *str)
+long	ft_atoi(char *str) 
 {
 	size_t	i;
 	int		res;
